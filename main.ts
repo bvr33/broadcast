@@ -8,7 +8,7 @@ import { Colors } from "./utils";
 
 const { serverInstance } = bedrockServer
 
-export const broadcast = (commandUser: ServerPlayer) => {
+export const broadcast = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new Form({
@@ -60,7 +60,7 @@ export const broadcast = (commandUser: ServerPlayer) => {
         }
     });
 };
-const broadcastToPlayer = (commandUser: ServerPlayer) => {
+const broadcastToPlayer = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new CustomForm(`Wyślij do send to player`);
@@ -80,9 +80,11 @@ const broadcastToPlayer = (commandUser: ServerPlayer) => {
             const pid = response[0];
             const pl = activePlayers[pid];
 
+            const preMsg = `${plugin.config.borderColor}-------[ ${plugin.config.textColor}BROADCAST ${plugin.config.borderColor}]-------`
+            const postMsg = preMsg
             const pkt: TextPacket = TextPacket.allocate();
             pkt.type = TextPacket.Types.Raw;
-            pkt.message = msg;
+            pkt.message = `${preMsg}\n${plugin.config.textColor}${msg}\n${postMsg}\n`
             pl.sendNetworkPacket(pkt);
             pkt.dispose();
         });
@@ -91,7 +93,7 @@ const broadcastToPlayer = (commandUser: ServerPlayer) => {
         noPlayerFound(commandUser);
     }
 };
-export const broadcastToAll = (commandUser: ServerPlayer) => {
+export const broadcastToAll = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new CustomForm;
@@ -112,16 +114,18 @@ export const broadcastToAll = (commandUser: ServerPlayer) => {
             broadcastToAll(commandUser);
             return;
         }
+        const preMsg = `${plugin.config.borderColor}-------[ ${plugin.config.textColor}BROADCAST ${plugin.config.borderColor}]-------`
+        const postMsg = preMsg
         const pkt: TextPacket = TextPacket.allocate();
         pkt.type = TextPacket.Types.Raw;
-        pkt.message = msg;
+        pkt.message = `${preMsg}\n${plugin.config.textColor}${msg}\n${postMsg}\n`
         activePlayers.forEach((p) => {
             p.sendNetworkPacket(pkt);
         });
         pkt.dispose();
     });
 };
-const noPlayerFound = (commandUser: ServerPlayer) => {
+const noPlayerFound = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new ModalForm('broadcast', 'player ');
@@ -132,7 +136,7 @@ const noPlayerFound = (commandUser: ServerPlayer) => {
             broadcast(commandUser);
     });
 };
-const settings = (commandUser: ServerPlayer) => {
+const settings = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const colors: string[] = [
@@ -175,7 +179,7 @@ const settings = (commandUser: ServerPlayer) => {
         changeSettings(commandUser);
     });
 };
-const changeSettings = (commandUser: ServerPlayer) => {
+const changeSettings = (commandUser: ServerPlayer): void => {
 
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
     const f = new Form({
@@ -193,27 +197,3 @@ const changeSettings = (commandUser: ServerPlayer) => {
         return;
     });
 };
-
-
-//const broadcast = command.register('broadcast', 'broadcast', CommandPermissionLevel.Operator)
-//
-//
-//broadcast.overload((param, origin, output) => {
-//    if (param.players) {
-//        const preMsg = '§6-------[ §4BROADCAST §6]-------'
-//        const postMsg = preMsg
-//        const pkt = TextPacket.allocate();
-//        pkt.type = TextPacket.Types.Raw;
-//        pkt.message = `${preMsg}\n§5${param.message.text}\n${postMsg}\n`;
-//
-//        for (const player of param.players.newResults(origin, ServerPlayer)) {
-//            player.sendNetworkPacket(pkt)
-//        }
-//        pkt.dispose();
-//
-//    }
-//
-//}, {
-//    players: [PlayerCommandSelector, true],
-//    message: CommandRawText
-//})

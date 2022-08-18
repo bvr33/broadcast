@@ -38,23 +38,23 @@ events.serverClose.on(() => {
 events.serverOpen.on(
     () => {
 
-        command.register(
+        const cmd = command.register(
             'broadcast',
             'broadcast panel and settings',
             CommandPermissionLevel.Operator
         )
-            .alias('brp')
-            .overload((_param, origin, _output) => {
-                const commandUser = origin.getEntity();
-                if (!commandUser?.isPlayer()) {
-                    plugin.log('ta komenda jest przeznaczona dla gracza');
-                    return;
-                }
-                broadcast(commandUser);
+        cmd.alias('brp')
+        cmd.overload((_param, origin, _output) => {
+            const commandUser = origin.getEntity();
+            if (!commandUser?.isPlayer()) {
+                plugin.log('ta komenda jest przeznaczona dla gracza');
+                return;
+            }
+            broadcast(commandUser);
 
-            },
-                {}
-            );
+        },
+            {}
+        );
 
     }
 )
