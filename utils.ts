@@ -38,7 +38,6 @@ export interface Language {
 }
 
 export interface Plugin {
-    name: string
     config: Configuration,
     translate: Language
     lang: string,
@@ -48,18 +47,15 @@ export class Plugin implements Plugin {
 
     public translate: Language
     public config: Configuration;
-    public name: string;
 
-    private configsPath: string = join(__dirname, '..', '..', 'config');
-    private configFile: string
+    private name: string
+    private configsPath: string = join(__dirname, 'config');
+    private configFile: string = join(this.configsPath, 'config.json');
     private langsPath: string = join(this.configsPath, 'lang')
     private usedLangPath: string
 
     constructor(name: string, initConfiguration: Configuration, initTranslate: Language) {
         this.name = name
-
-        this.configFile = join(this.configsPath, `${this.name}`, 'config.json');
-
         if (!existsSync(this.configsPath)) mkdirSync(this.configsPath)
 
         if (!existsSync(this.langsPath)) mkdirSync(this.langsPath)
@@ -76,18 +72,11 @@ export class Plugin implements Plugin {
         }
         this.translate = JSON.parse(readFileSync(join(this.usedLangPath), 'utf8'))
 
-        this.logInfo()
     }
 
     public log(message: string): void {
         const name: string = `[`.red + this.name.green + `]`.red
         const msg: string = `${message}`.green
-        console.log(`${name} ${msg}`)
-    }
-
-    private logInfo(): void {
-        const name: string = `[${this.name}]`.green
-        const msg: string = ` Load Language: ${this.config.language}`.yellow
         console.log(`${name} ${msg}`)
     }
 
