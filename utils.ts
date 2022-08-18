@@ -24,8 +24,12 @@ export enum langs {
     PL = "PL_pl"
 }
 export interface Configuration {
-    language: langs
-    [key: string]: any
+    language: langs,
+    enable: boolean,
+    randomOrder: boolean,
+    textColor: Colors,
+    borderColor: Colors,
+    interval: number
 }
 export interface Language {
     name: string
@@ -45,20 +49,22 @@ export class Plugin implements Plugin {
     public translate: Language
     public config: Configuration;
     public name: string
+    public messagesList: string[]
 
+    private messagesPath: string
     private configs: string
     private configPath: string
     private configFile: string
     private langsPath: string
     private usedLangPath: string
 
-    constructor(name: string, initConfiguration: Configuration, initTranslate: Language) {
-        this.name = name
+    constructor(initConfiguration: Configuration, initTranslate: Language, messagesList: string[]) {
+        this.name = initTranslate.name
         this.configs = join(__dirname, '..', '..', 'config');
         this.configPath = join(this.configs, this.name);
         this.configFile = join(this.configPath, 'config.json');
+        this.messagesPath = join(this.configPath, 'messages.json');
         this.langsPath = join(this.configPath, 'lang')
-
 
         if (!existsSync(this.configs)) mkdirSync(this.configs)
 
@@ -70,7 +76,11 @@ export class Plugin implements Plugin {
             writeFileSync(this.configFile, JSON.stringify(initConfiguration, null, 4))
         }
 
+        if (!existsSync(this.messagesPath)) {
+            writeFileSync(this.messagesPath, JSON.stringify(messagesList, null, 4))
+        }
         this.config = JSON.parse(readFileSync(this.configFile, 'utf8'))
+        this.messagesList = JSON.parse(readFileSync(this.messagesPath, 'utf8'))
 
         this.usedLangPath = join(this.langsPath, `${this.config.language}.json`)
 
@@ -91,6 +101,12 @@ export class Plugin implements Plugin {
         const configFromFIle = JSON.parse(readFileSync(this.configFile, 'utf8'))
         if (configFromFIle != this.config) writeFileSync(this.configFile, JSON.stringify(this.config, null, 4))
         this.log('config updated')
+    }
+
+    public updateMessages(): void {
+        const messagesInFile = JSON.parse(readFileSync(this.messagesPath, 'utf8'))
+        if (messagesInFile != this.messagesList) writeFileSync(this.messagesPath, JSON.stringify(this.messagesList, null, 4))
+        this.log('messages updated')
     }
 
 }

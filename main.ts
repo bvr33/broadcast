@@ -1,14 +1,12 @@
-import { Plugin, Colors, langs } from "./utils";
-import { events } from "bdsx/event";
+import { Colors } from "./utils";
 import { bedrockServer } from "bdsx/launcher";
-import { command } from "bdsx/command";
-import { CommandPermissionLevel } from "bdsx/bds/command";
-import { CustomForm, Form, FormDropdown, FormInput, FormSlider, FormToggle, ModalForm } from "bdsx/bds/form";
+import { CustomForm, Form, FormDropdown, FormInput, FormLabel, FormSlider, FormToggle, ModalForm } from "bdsx/bds/form";
 import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { TextPacket } from "bdsx/bds/packets";
 import { ServerPlayer } from "bdsx/bds/player";
 import { plugin } from ".";
-
+import { broadcastLoop, createMessage } from "./broadcastLoop";
+import { TypeFormatFlags } from "typescript";
 
 export const broadcast = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
@@ -33,7 +31,21 @@ export const broadcast = (commandUser: ServerPlayer): void => {
                 }
             },
             {
-                text: 'settings',
+                text: 'Settings',
+                image: {
+                    type: 'path',
+                    data: './img/book_writable.png'
+                }
+            },
+            {
+                text: 'Add Message',
+                image: {
+                    type: 'path',
+                    data: './img/book_writable.png'
+                }
+            },
+            {
+                text: 'Delete Message',
                 image: {
                     type: 'path',
                     data: './img/book_writable.png'
@@ -57,6 +69,16 @@ export const broadcast = (commandUser: ServerPlayer): void => {
             case 2:
                 {
                     settings(commandUser);
+                }
+                break;
+            case 3:
+                {
+                    addMessage(commandUser);
+                }
+                break;
+            case 4:
+                {
+                    delMessage(commandUser);
                 }
                 break;
         }
@@ -83,11 +105,9 @@ const broadcastToPlayer = (commandUser: ServerPlayer): void => {
             const pid = response[0];
             const pl = activePlayers[pid];
 
-            const preMsg = `${plugin.config.borderColor}-------[ ${plugin.config.textColor}BROADCAST ${plugin.config.borderColor}]-------`
-            const postMsg = preMsg
             const pkt: TextPacket = TextPacket.allocate();
             pkt.type = TextPacket.Types.Raw;
-            pkt.message = `${preMsg}\n${plugin.config.textColor}${msg}\n${postMsg}\n`
+            pkt.message = createMessage(msg)
             pl.sendNetworkPacket(pkt);
             pkt.dispose();
         });
@@ -120,7 +140,7 @@ const broadcastToAll = (commandUser: ServerPlayer): void => {
         }
         const pkt: TextPacket = TextPacket.allocate();
         pkt.type = TextPacket.Types.Raw;
-        pkt.message = `${plugin.config.borderColor}-----------[ ${plugin.config.textColor}BROADCAST ${plugin.config.borderColor}]-----------\n\n${plugin.config.textColor}${msg}\n\n${plugin.config.borderColor}----------------------------------\n`
+        pkt.message = createMessage(msg)
         activePlayers.forEach((p) => {
             p.sendNetworkPacket(pkt);
         });
@@ -178,16 +198,17 @@ const settings = (commandUser: ServerPlayer): void => {
         plugin.config.borderColor = Object.values(Colors)[response[3]];
         plugin.config.interval = response[4];
         plugin.updateConfig();
-        changeSettings(commandUser);
+        broadcastLoop.reload()
+        changeInfo(commandUser, `update setings done`);
     });
 };
-const changeSettings = (commandUser: ServerPlayer): void => {
+const changeInfo = (commandUser: ServerPlayer, message: string): void => {
 
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
     const f = new Form({
         type: "modal",
         title: `settings broadcast`,
-        content: `update setings done`,
+        content: message,
         button1: `back`,
         button2: 'exit',
     });
@@ -200,3 +221,35 @@ const changeSettings = (commandUser: ServerPlayer): void => {
     });
 };
 
+const addMessage = (commandUser: ServerPlayer) => {
+    const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
+    const f = new CustomForm(`Add Message`)
+    f.addComponent(new FormInput('message', 'Message content', ''))
+
+    f.sendTo(ni, ({ response }, ni) => {
+        const msg = response[0];
+        if (msg == '') {
+            addMessage(commandUser);
+            return;
+        }
+        plugin.messagesList.push(msg)
+        plugin.updateMessages()
+        changeInfo(commandUser, 'update messages list')
+
+    });
+}
+const delMessage = (commandUser: ServerPlayer) => {
+    const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
+    const f = new CustomForm(`Delete Message`)
+    plugin.messagesList.forEach((value, idx) => {
+        plugin.log(`${idx}`)
+        f.addComponent(new FormLabel(value))
+        f.addComponent(new FormToggle('Remove', false))
+        f.addComponent(new FormLabel(`${Colors.Black}--------------`))
+    })
+
+
+    f.sendTo(ni, ({ response }, ni) => {
+        plugin.log(response)
+    });
+}
