@@ -46,25 +46,30 @@ export class Plugin implements Plugin {
     public config: Configuration;
     public name: string
 
-    private configsPath: string
+    private configs: string
+    private configPath: string
     private configFile: string
     private langsPath: string
     private usedLangPath: string
 
     constructor(name: string, initConfiguration: Configuration, initTranslate: Language) {
         this.name = name
-        this.configsPath = join(__dirname, '..', '..', this.name, 'config');
-        this.configFile = join(this.configsPath, 'config.json');
-        this.langsPath = join(this.configsPath, 'lang')
+        this.configs = join(__dirname, '..', '..', 'config');
+        this.configPath = join(this.configs, this.name);
+        this.configFile = join(this.configPath, 'config.json');
+        this.langsPath = join(this.configPath, 'lang')
 
 
-        if (!existsSync(this.configsPath)) mkdirSync(this.configsPath)
+        if (!existsSync(this.configs)) mkdirSync(this.configs)
+
+        if (!existsSync(this.configPath)) mkdirSync(this.configPath)
 
         if (!existsSync(this.langsPath)) mkdirSync(this.langsPath)
 
         if (!existsSync(this.configFile)) {
             writeFileSync(this.configFile, JSON.stringify(initConfiguration, null, 4))
         }
+
         this.config = JSON.parse(readFileSync(this.configFile, 'utf8'))
 
         this.usedLangPath = join(this.langsPath, `${this.config.language}.json`)
