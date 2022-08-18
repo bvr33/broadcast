@@ -47,8 +47,8 @@ export class Plugin implements Plugin {
 
     public translate: Language
     public config: Configuration;
+    public name: string
 
-    private name: string
     private configsPath: string = join(__dirname, 'config');
     private configFile: string = join(this.configsPath, 'config.json');
     private langsPath: string = join(this.configsPath, 'lang')

@@ -30,23 +30,34 @@ const plugin = new Plugin(
 );
 
 
+events.serverOpen.on(() => {
+    plugin.log(`launching`);
+});
+
+events.serverClose.on(() => {
+    plugin.log(`closed`);
+});
+
 
 events.serverOpen.on(() => {
 
-    const cmd: CustomCommandFactory = command.register('broadcast', 'admin panel', CommandPermissionLevel.Operator)
+    command.register(
+        'broadcast',
+        'broadcast panel and settings',
+        CommandPermissionLevel.Operator
+    )
+        .alias('brp')
+        .overload((_param, origin, _output) => {
+            const commandUser = origin.getEntity();
+            if (!commandUser?.isPlayer()) {
+                plugin.log('ta komenda jest przeznaczona dla gracza');
+                return;
+            }
+            broadcast(commandUser);
 
-    cmd.alias('br');
-    cmd.overload((_param, origin, _output) => {
-
-        const commandUser = origin.getEntity();
-        if (!commandUser?.isPlayer()) {
-            plugin.log('ta komenda jest przeznaczona dla gracza');
-            return;
-        }
-        broadcast(commandUser);
-    },
-        {}
-    );
+        },
+            {}
+        );
 
 })
 
