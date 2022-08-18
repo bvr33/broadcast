@@ -23,12 +23,10 @@ export enum Colors {
 export enum langs {
     PL = "PL_pl"
 }
-
 export interface Configuration {
     language: langs
     [key: string]: any
 }
-
 export interface Language {
     name: string
     messages: { [key: string]: string }
@@ -36,7 +34,6 @@ export interface Language {
     settings: { [key: string]: string },
     texts: { [key: string]: string }
 }
-
 export interface Plugin {
     config: Configuration,
     translate: Language
@@ -49,13 +46,18 @@ export class Plugin implements Plugin {
     public config: Configuration;
     public name: string
 
-    private configsPath: string = join(__dirname, 'config');
-    private configFile: string = join(this.configsPath, 'config.json');
-    private langsPath: string = join(this.configsPath, 'lang')
+    private configsPath: string
+    private configFile: string
+    private langsPath: string
     private usedLangPath: string
 
     constructor(name: string, initConfiguration: Configuration, initTranslate: Language) {
         this.name = name
+        this.configsPath = join(__dirname, '..', '..', this.name, 'config');
+        this.configFile = join(this.configsPath, 'config.json');
+        this.langsPath = join(this.configsPath, 'lang')
+
+
         if (!existsSync(this.configsPath)) mkdirSync(this.configsPath)
 
         if (!existsSync(this.langsPath)) mkdirSync(this.langsPath)
