@@ -30,8 +30,9 @@ export const changeSettings = (commandUser: ServerPlayer): void => {
     ];
     const f = new CustomForm(`broadcast settings`);
 
-    f.addComponent(new FormToggle('on', plugin.config.enable));
+    f.addComponent(new FormToggle('On', plugin.config.enable));
     f.addComponent(new FormToggle('Random message order', plugin.config.randomOrder));
+    f.addComponent(new FormToggle('Log to Console', plugin.config.logToConsole));
 
     const textColorSetNumber: number = Object.values(Colors).indexOf(plugin.config.textColor);
 
@@ -43,9 +44,10 @@ export const changeSettings = (commandUser: ServerPlayer): void => {
     f.sendTo(ni, ({ response }) => {
         plugin.config.enable = response[0];
         plugin.config.randomOrder = response[1];
-        plugin.config.textColor = Object.values(Colors)[response[2]];
-        plugin.config.borderColor = Object.values(Colors)[response[3]];
-        plugin.config.interval = response[4];
+        plugin.config.logToConsole = response[2];
+        plugin.config.textColor = Object.values(Colors)[response[3]];
+        plugin.config.borderColor = Object.values(Colors)[response[4]];
+        plugin.config.interval = response[5];
         plugin.updateConfig();
         broadcastLoop.reload()
         sendChangeInfo(commandUser, `update setings done`);
@@ -73,15 +75,18 @@ export const delMessage = (commandUser: ServerPlayer) => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
     const f = new CustomForm(`Delete Message`)
     plugin.messagesList.forEach((value, idx) => {
-        plugin.log(`${idx}`)
         f.addComponent(new FormLabel(value))
         f.addComponent(new FormToggle('Remove', false))
-        f.addComponent(new FormLabel(`${Colors.Black}--------------`))
+        f.addComponent(new FormLabel(`${Colors.White}--------------`))
     })
 
 
-    f.sendTo(ni, (data) => {
-        data.toJSON
-        plugin.log(JSON.stringify(data.toJSON, null, 4))
+    f.sendTo(ni, ({ response }) => {
+        const filteredResponse: boolean[] = response.filter((value: boolean | null) => value != null)
+        filteredResponse.forEach((v, i) => {
+            if (v) plugin.messagesList.splice(i, 1)
+        })
+        plugin.updateMessages()
+        broadcastLoop.reloadMessage()
     });
 }

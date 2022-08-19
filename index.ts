@@ -11,6 +11,7 @@ export const plugin = new Plugin(
         language: langs.PL,
         enable: true,
         randomOrder: false,
+        logToConsole: false,
         textColor: Colors.Red,
         borderColor: Colors.Yellow,
         interval: 3,

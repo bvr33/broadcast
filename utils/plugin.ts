@@ -9,6 +9,7 @@ export interface Configuration {
     language: langs,
     enable: boolean,
     randomOrder: boolean,
+    logToConsole: boolean
     textColor: Colors,
     borderColor: Colors,
     interval: number
