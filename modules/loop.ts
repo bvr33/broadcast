@@ -1,7 +1,13 @@
-import { TextPacket } from "bdsx/bds/packets"
-import { events } from "bdsx/event"
-import { bedrockServer } from "bdsx/launcher"
-import { plugin } from "."
+
+import { bedrockServer } from "bdsx/launcher";
+import { CustomForm, Form, FormDropdown, FormInput, FormLabel, FormSlider, FormToggle, ModalForm } from "bdsx/bds/form";
+import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
+import { TextPacket } from "bdsx/bds/packets";
+import { ServerPlayer } from "bdsx/bds/player";
+import { events } from "bdsx/event";
+import { plugin } from "..";
+import { createMessage } from "../utils/middle";
+
 
 export interface BroadcastLoop {
     start(): void
@@ -62,6 +68,7 @@ export class BroadcastLoop implements BroadcastLoop {
     public stop = () => {
         clearInterval(this.loop)
     }
+
     public reload = () => {
         this.stop()
         this.start()
@@ -72,10 +79,5 @@ export class BroadcastLoop implements BroadcastLoop {
     }
 
 }
+
 export const broadcastLoop = new BroadcastLoop()
-
-
-export const createMessage = (msg: string) => {
-    return `${plugin.config.borderColor}-----------[ ${plugin.config.textColor}BROADCAST ${plugin.config.borderColor}]-----------\n\n${plugin.config.textColor}${msg}\n\n${plugin.config.borderColor}----------------------------------\n`
-}
-

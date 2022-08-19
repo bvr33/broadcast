@@ -1,9 +1,10 @@
-import { Plugin, Colors, langs } from "./utils";
+import { Plugin, langs } from "./utils/plugin";
 import { events } from "bdsx/event";
 import { command } from "bdsx/command";
 import { CommandPermissionLevel } from "bdsx/bds/command";
-import { broadcast } from "./main";
-import { broadcastLoop } from "./broadcastLoop";
+import { broadcast } from "./modules/braodcast";
+import { Colors } from "./utils/colors";
+
 
 export const plugin = new Plugin(
     {

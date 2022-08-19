@@ -1,24 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
-
-export enum Colors {
-    Red = "§c",
-    Gold = "§6",
-    Yellow = "§e",
-    Green = "§a",
-    Aqua = "§b",
-    Blue = "§9",
-    LightPurple = "§d",
-    White = "§f",
-    Gray = "§7",
-    Black = "§0",
-    DarkRed = "§4",
-    DarkGreen = "§2",
-    DarkAqua = "§3",
-    DarkBlue = "§1",
-    DarkPurple = "§5",
-    DarkGray = "§8",
-}
+import { Colors } from './colors';
 
 export enum langs {
     PL = "PL_pl"
@@ -60,7 +42,7 @@ export class Plugin implements Plugin {
 
     constructor(initConfiguration: Configuration, initTranslate: Language, messagesList: string[]) {
         this.name = initTranslate.name
-        this.configs = join(__dirname, '..', '..', 'config');
+        this.configs = join(__dirname, '..', '..', '..', 'config');
         this.configPath = join(this.configs, this.name);
         this.configFile = join(this.configPath, 'config.json');
         this.messagesPath = join(this.configPath, 'messages.json');
