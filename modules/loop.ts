@@ -49,7 +49,7 @@ export class BroadcastLoop implements BroadcastLoop {
 
                     message = plugin.messagesList[this.messageIndex]
 
-                    plugin.log(`${'message'.gray} ${'->'.yellow} ${message}`)
+                    if (plugin.config.logToConsole) plugin.log(`${'message'.gray} ${'->'.yellow} ${message}`)
                     pkt.message = createMessage(message)
                     activePlayers.forEach((p) => {
                         p.sendNetworkPacket(pkt);
