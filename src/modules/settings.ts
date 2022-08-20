@@ -1,8 +1,8 @@
 import { CustomForm, FormDropdown, FormInput, FormLabel, FormSlider, FormToggle } from "bdsx/bds/form";
 import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { ServerPlayer } from "bdsx/bds/player";
+import { TextFormat } from "bdsx/util";
 import { plugin } from "..";
-import { Colors } from "../utils/colors";
 import { broadcastLoop } from "./loop";
 import { sendChangeInfo } from "./messages";
 
@@ -11,22 +11,22 @@ export const changeSettings = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const colors: string[] = [
-        `${Colors.Red}red`,
-        `${Colors.Gold}gold`,
-        `${Colors.Yellow}yellow`,
-        `${Colors.Green}green`,
-        `${Colors.Aqua}aqua`,
-        `${Colors.Blue}blue`,
-        `${Colors.LightPurple}light_purple`,
-        `${Colors.White}white`,
-        `${Colors.Gray}gray`,
-        `${Colors.Black}black`,
-        `${Colors.DarkRed}darkRed`,
-        `${Colors.DarkGreen}darkGreen`,
-        `${Colors.DarkAqua}darkAqua`,
-        `${Colors.DarkBlue}darkBlue`,
-        `${Colors.DarkPurple}darkPurple`,
-        `${Colors.DarkGray}darkGray`,
+        `${TextFormat.RED}red`,
+        `${TextFormat.GOLD}gold`,
+        `${TextFormat.YELLOW}yellow`,
+        `${TextFormat.GREEN}green`,
+        `${TextFormat.AQUA}aqua`,
+        `${TextFormat.BLUE}blue`,
+        `${TextFormat.LIGHT_PURPLE}light_purple`,
+        `${TextFormat.WHITE}white`,
+        `${TextFormat.GRAY}gray`,
+        `${TextFormat.BLACK}black`,
+        `${TextFormat.DARK_RED}darkRed`,
+        `${TextFormat.DARK_GREEN}darkGreen`,
+        `${TextFormat.DARK_AQUA}darkAqua`,
+        `${TextFormat.DARK_BLUE}darkBlue`,
+        `${TextFormat.DARK_PURPLE}darkPurple`,
+        `${TextFormat.DARK_GRAY}darkGray`,
     ];
     const f = new CustomForm(`broadcast settings`);
 
@@ -34,19 +34,19 @@ export const changeSettings = (commandUser: ServerPlayer): void => {
     f.addComponent(new FormToggle('Random message order', plugin.config.randomOrder));
     f.addComponent(new FormToggle('Log to Console', plugin.config.logToConsole));
 
-    const textColorSetNumber: number = Object.values(Colors).indexOf(plugin.config.textColor);
+    const textColorSetNumber: number = Object.values(TextFormat).indexOf(plugin.config.textColor);
 
     f.addComponent(new FormDropdown('text color', colors, textColorSetNumber));
 
-    const borderColorSetNumber: number = Object.values(Colors).indexOf(plugin.config.borderColor);
+    const borderColorSetNumber: number = Object.values(TextFormat).indexOf(plugin.config.borderColor);
     f.addComponent(new FormDropdown('border color', colors, borderColorSetNumber));
     f.addComponent(new FormSlider('message interval', 1, 10, 1, plugin.config.interval));
     f.sendTo(ni, ({ response }) => {
         plugin.config.enable = response[0];
         plugin.config.randomOrder = response[1];
         plugin.config.logToConsole = response[2];
-        plugin.config.textColor = Object.values(Colors)[response[3]];
-        plugin.config.borderColor = Object.values(Colors)[response[4]];
+        plugin.config.textColor = Object.values(TextFormat)[response[3]];
+        plugin.config.borderColor = Object.values(TextFormat)[response[4]];
         plugin.config.interval = response[5];
         plugin.updateConfig();
         broadcastLoop.reload()
@@ -77,7 +77,7 @@ export const delMessage = (commandUser: ServerPlayer) => {
     plugin.messagesList.forEach((value, idx) => {
         f.addComponent(new FormLabel(value))
         f.addComponent(new FormToggle('Remove', false))
-        f.addComponent(new FormLabel(`${Colors.White}--------------`))
+        f.addComponent(new FormLabel(`${TextFormat.WHITE}--------------`))
     })
 
 

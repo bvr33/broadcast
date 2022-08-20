@@ -3,7 +3,7 @@ import { events } from "bdsx/event";
 import { command } from "bdsx/command";
 import { CommandPermissionLevel } from "bdsx/bds/command";
 import { broadcast } from "./modules/braodcast";
-import { Colors } from "./utils/colors";
+import { TextFormat } from "bdsx/util";
 
 
 export const plugin = new Plugin(
@@ -12,8 +12,8 @@ export const plugin = new Plugin(
         enable: true,
         randomOrder: false,
         logToConsole: false,
-        textColor: Colors.Red,
-        borderColor: Colors.Yellow,
+        textColor: TextFormat.YELLOW,
+        borderColor: TextFormat.GRAY,
         interval: 3,
     },
     {

@@ -1,6 +1,6 @@
+import { TextFormat } from 'bdsx/util';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { Colors } from './colors';
 
 export enum langs {
     PL = "PL_pl"
@@ -10,8 +10,8 @@ export interface Configuration {
     enable: boolean,
     randomOrder: boolean,
     logToConsole: boolean
-    textColor: Colors,
-    borderColor: Colors,
+    textColor: string,
+    borderColor: string,
     interval: number
 }
 export interface Language {
