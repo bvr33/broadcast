@@ -43,7 +43,7 @@ export class Plugin implements Plugin {
 
     constructor(initConfiguration: Configuration, initTranslate: Language, messagesList: string[]) {
         this.name = initTranslate.name
-        this.configs = join(__dirname, '..', '..', '..', 'config');
+        this.configs = join(__dirname, '..', '..', '..', '..', 'config');
         this.configPath = join(this.configs, this.name);
         this.configFile = join(this.configPath, 'config.json');
         this.messagesPath = join(this.configPath, 'messages.json');
