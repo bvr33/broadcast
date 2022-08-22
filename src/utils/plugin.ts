@@ -1,4 +1,3 @@
-import { TextFormat } from 'bdsx/util';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
