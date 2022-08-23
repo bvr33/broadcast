@@ -57,10 +57,10 @@ export const broadcast = (commandUser: ServerPlayer): void => {
 
         switch (response) {
             case 0:
-                broadcastToPlayer(commandUser);
+                sendToOne(commandUser);
                 break;
             case 1:
-                broadcastToAll(commandUser);
+                sendToAll(commandUser);
                 break;
             case 2:
                 changeSettings(commandUser);
@@ -75,7 +75,7 @@ export const broadcast = (commandUser: ServerPlayer): void => {
     });
 };
 
-const broadcastToPlayer = (commandUser: ServerPlayer): void => {
+const sendToOne = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new CustomForm(`Wyślij do send to player`);
@@ -89,7 +89,7 @@ const broadcastToPlayer = (commandUser: ServerPlayer): void => {
         f.sendTo(ni, ({ response }, ni) => {
             const msg = response[1] || "";
             if (msg == '') {
-                broadcastToPlayer(commandUser);
+                sendToOne(commandUser);
                 return;
             }
             const pid = response[0];
@@ -106,7 +106,8 @@ const broadcastToPlayer = (commandUser: ServerPlayer): void => {
         sendChangeInfo(commandUser, "No players Found!");
     }
 };
-const broadcastToAll = (commandUser: ServerPlayer): void => {
+
+const sendToAll = (commandUser: ServerPlayer): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
     const f = new CustomForm;
@@ -125,7 +126,7 @@ const broadcastToAll = (commandUser: ServerPlayer): void => {
 
         const msg = response[0];
         if (msg == '') {
-            broadcastToAll(commandUser);
+            sendToAll(commandUser);
             return;
         }
         const pkt: TextPacket = TextPacket.allocate();
