@@ -17,13 +17,17 @@ export class BroadcastLoop implements BroadcastLoop {
     private messageIndex: number = 0
     private messagesCount: number
 
-    constructor() {
-        events.serverOpen.on(this.start)
+    constructor () {
+        events.serverOpen.on( async () => {
+            this.start()
+        }
+        )
     }
 
 
     public start = () => {
-        if (plugin.config.enable) {
+        if( plugin.config.enable )
+        {
             this.updateMessage()
 
             this.loop = setInterval(
@@ -32,11 +36,13 @@ export class BroadcastLoop implements BroadcastLoop {
                     const pkt: TextPacket = TextPacket.allocate();
                     pkt.type = TextPacket.Types.Raw;
                     let message: string
-                    if (this.messagesCount > 1) {
+                    if( this.messagesCount > 1 )
+                    {
 
-                        if (plugin.config.randomOrder) this.messageIndex = Math.floor(Math.random() * this.messagesCount)
-                        else {
-                            if (this.messageIndex >= this.messagesCount) this.messageIndex = 0
+                        if( plugin.config.randomOrder ) this.messageIndex = Math.floor( Math.random() * this.messagesCount )
+                        else
+                        {
+                            if( this.messageIndex >= this.messagesCount ) this.messageIndex = 0
                             else this.messageIndex++
 
                         }
@@ -44,11 +50,11 @@ export class BroadcastLoop implements BroadcastLoop {
 
                     message = plugin.messagesList[this.messageIndex]
 
-                    if (plugin.config.logToConsole) plugin.log(`${'message'.gray} ${'->'.yellow} ${message}`)
-                    pkt.message = createMessage(message)
-                    activePlayers.forEach((p) => {
-                        p.sendNetworkPacket(pkt);
-                    });
+                    if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
+                    pkt.message = createMessage( message )
+                    activePlayers.forEach( ( p ) => {
+                        p.sendNetworkPacket( pkt );
+                    } );
                     pkt.dispose();
 
                 },
@@ -61,7 +67,7 @@ export class BroadcastLoop implements BroadcastLoop {
     }
 
     public stop = () => {
-        clearInterval(this.loop)
+        clearInterval( this.loop )
     }
 
     public updateMessage = () => {
