@@ -3,13 +3,11 @@ import { bedrockServer } from "bdsx/launcher";
 import { TextPacket } from "bdsx/bds/packets";
 import { events } from "bdsx/event";
 import { plugin } from "..";
-import { createMessage } from "../utils/middle";
-
+import { createMessage } from "../utils/helpers";
 
 export interface BroadcastLoop {
     start(): void
     stop(): void
-    reload(): void
     reloadMessage(): void
 }
 
@@ -26,7 +24,7 @@ export class BroadcastLoop implements BroadcastLoop {
 
     public start = () => {
         if (plugin.config.enable) {
-            this.reloadMessage()
+            this.updateMessage()
 
             this.loop = setInterval(
                 () => {
@@ -66,12 +64,8 @@ export class BroadcastLoop implements BroadcastLoop {
         clearInterval(this.loop)
     }
 
-    public reload = () => {
-        this.stop()
-        this.start()
-    }
-
-    public reloadMessage = () => {
+    public updateMessage = () => {
+        plugin.updateMessages()
         this.messagesCount = plugin.messagesList.length - 1
     }
 

@@ -68,10 +68,11 @@ export class Plugin implements Plugin {
         this.log('config updated')
     }
 
-    public updateMessages(): void {
+    public updateMessages(): number {
         const messagesInFile = JSON.parse(readFileSync(this.messagesPath, 'utf8'))
         if (messagesInFile != this.messagesList) writeFileSync(this.messagesPath, JSON.stringify(this.messagesList, null, 4))
         this.log('messages updated')
+        return this.messagesList.length -1
     }
 
 }

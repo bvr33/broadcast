@@ -3,9 +3,8 @@ import { CustomForm, Form, FormDropdown, FormInput, FormLabel, FormSlider, FormT
 import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { TextPacket } from "bdsx/bds/packets";
 import { ServerPlayer } from "bdsx/bds/player";
-import { sendChangeInfo } from "./messages";
 import { addMessage, changeSettings, delMessage } from "./settings";
-import { createMessage } from "../utils/middle";
+import { createMessage } from "../utils/helpers";
 
 
 export const broadcast = (commandUser: ServerPlayer): void => {
@@ -103,7 +102,7 @@ const sendToOne = (commandUser: ServerPlayer): void => {
         });
     }
     else {
-        sendChangeInfo(commandUser, "No players Found!");
+        commandUser.sendMessage("No players Found!");
     }
 };
 

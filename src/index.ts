@@ -1,10 +1,10 @@
-import { Plugin, langs } from "./utils/plugin";
+import { Plugin } from "./utils/plugin";
 import { events } from "bdsx/event";
 import { command } from "bdsx/command";
 import { CommandPermissionLevel } from "bdsx/bds/command";
 import { broadcast } from "./modules/braodcast";
 import { TextFormat } from "bdsx/util";
-
+import { langs } from "./utils/language";
 
 export const plugin = new Plugin(
     {
@@ -15,6 +15,7 @@ export const plugin = new Plugin(
         textColor: TextFormat.YELLOW,
         borderColor: TextFormat.GRAY,
         interval: 3,
+        border:'---------------------',
     },
     {
         name: 'Broadcast',
@@ -24,7 +25,7 @@ export const plugin = new Plugin(
         texts: {}
     },
     [
-        'welcome to the server',
+        'welcome to the server!',
     ]
 );
 

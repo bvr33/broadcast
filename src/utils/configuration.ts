@@ -8,4 +8,5 @@ export interface Configuration {
     textColor: string,
     borderColor: string,
     interval: number
+    border:string,
 }
