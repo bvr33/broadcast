@@ -1,9 +1,32 @@
-import { langs, Plugin } from "@bdsx/plugin_base";
+import { Plugin } from "./utils/plugin";
 import { events } from "bdsx/event";
 import { command } from "bdsx/command";
 import { CommandPermissionLevel } from "bdsx/bds/command";
 import { broadcast } from "./modules/braodcast";
 import { TextFormat } from "bdsx/util";
+
+export enum langs {
+    PL = "PL_pl"
+}
+
+export interface Language {
+    name: string
+    messages: {}
+    menuEntries: {}
+    settings: {},
+    texts: {}
+}
+export interface Configuration {
+    language: langs,
+    enable: boolean,
+    randomOrder: boolean,
+    logToConsole: boolean,
+    textColor: string,
+    borderColor: string,
+    interval: number,
+    border: string
+    messagesList: string[],
+}
 
 export const plugin = new Plugin(
     {
