@@ -5,13 +5,9 @@ import { events } from "bdsx/event";
 import { plugin } from "..";
 import { createMessage } from "../utils/helpers";
 
-export interface BroadcastLoop {
-    start(): void
-    stop(): void
-    reloadMessage(): void
-}
 
-export class BroadcastLoop implements BroadcastLoop {
+
+export class BroadcastLoop {
 
     private loop: NodeJS.Timeout
     private messageIndex: number = 0
