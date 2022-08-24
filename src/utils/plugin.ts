@@ -13,7 +13,7 @@ export class Plugin implements Plugin {
     public config: Configuration;
     public name: string
 
-    private configs: string = join( __dirname, '..', '..', 'config' );
+    private configs: string = join( __dirname, '..', '..', '..', '..', 'config' );
     private configPath: string
     private configFile: string
     private langsPath: string
