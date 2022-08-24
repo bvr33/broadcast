@@ -24,75 +24,76 @@ const colors: string[] = [
     `${TextFormat.DARK_GRAY}darkGray`,
 ];
 
-export const changeSettings = (commandUser: ServerPlayer): void => {
+export const changeSettings = ( commandUser: ServerPlayer ): void => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
 
 
-    const f = new CustomForm(`broadcast settings`);
+    const f = new CustomForm( `broadcast settings` );
     // on /off button
-    f.addComponent(new FormToggle('On', plugin.config.enable));
+    f.addComponent( new FormToggle( 'On', plugin.config.enable ) );
     // random message orger button
-    f.addComponent(new FormToggle('Random message order', plugin.config.randomOrder));
+    f.addComponent( new FormToggle( 'Random message order', plugin.config.randomOrder ) );
     //log broadcast messages to console
-    f.addComponent(new FormToggle('Log to Console', plugin.config.logToConsole));
+    f.addComponent( new FormToggle( 'Log to Console', plugin.config.logToConsole ) );
 
     //message border
-    f.addComponent(new FormInput('Border', 'border',plugin.config.border));
+    f.addComponent( new FormInput( 'Border', 'border', plugin.config.border ) );
 
     //message color
-    const textColorSetNumber: number = Object.values(TextFormat).indexOf(plugin.config.textColor);
-    f.addComponent(new FormDropdown('text color', colors, textColorSetNumber));
+    const textColorSetNumber: number = Object.values( TextFormat ).indexOf( plugin.config.textColor );
+    f.addComponent( new FormDropdown( 'text color', colors, textColorSetNumber ) );
 
     //message border color
-    const borderColorSetNumber: number = Object.values(TextFormat).indexOf(plugin.config.borderColor);
-    f.addComponent(new FormDropdown('border color', colors, borderColorSetNumber));
+    const borderColorSetNumber: number = Object.values( TextFormat ).indexOf( plugin.config.borderColor );
+    f.addComponent( new FormDropdown( 'border color', colors, borderColorSetNumber ) );
 
-    f.addComponent(new FormSlider('message interval', 1, 10, 1, plugin.config.interval));
-    f.sendTo(ni, ({ response }) => {
+    f.addComponent( new FormSlider( 'message interval', 1, 10, 1, plugin.config.interval ) );
+    f.sendTo( ni, ( { response } ) => {
         plugin.config.enable = response[0];
         plugin.config.randomOrder = response[1];
         plugin.config.logToConsole = response[2];
         plugin.config.border = response[3];
-        plugin.config.textColor = Object.values(TextFormat)[response[4]];
-        plugin.config.borderColor = Object.values(TextFormat)[response[5]];
+        plugin.config.textColor = Object.values( TextFormat )[response[4]];
+        plugin.config.borderColor = Object.values( TextFormat )[response[5]];
         plugin.config.interval = response[6];
         plugin.updateConfig();
-        commandUser.sendMessage(`update setings done`);
-    });
+        commandUser.sendMessage( `update setings done` );
+    } );
 };
 
-export const addMessage = (commandUser: ServerPlayer) => {
+export const addMessage = ( commandUser: ServerPlayer ) => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
-    const f = new CustomForm(`Add Message`)
-    f.addComponent(new FormInput('message', 'Message content', ''))
+    const f = new CustomForm( `Add Message` )
+    f.addComponent( new FormInput( 'message', 'Message content', '' ) )
 
-    f.sendTo(ni, ({ response }) => {
+    f.sendTo( ni, ( { response } ) => {
         const msg = response[0];
-        if (msg == '') {
-            addMessage(commandUser);
+        if( msg == '' )
+        {
+            addMessage( commandUser );
             return;
         }
-        plugin.messagesList.push(msg)
+        plugin.config.messagesList.push( msg )
         broadcastLoop.reloadMessage()
-        commandUser.sendMessage('update messages list done')
+        commandUser.sendMessage( 'update messages list done' )
 
-    });
+    } );
 }
-export const delMessage = (commandUser: ServerPlayer) => {
+export const delMessage = ( commandUser: ServerPlayer ) => {
     const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
-    const f = new CustomForm(`Delete Message`)
-    plugin.messagesList.forEach((value, idx) => {
-        f.addComponent(new FormLabel(value))
-        f.addComponent(new FormToggle('Remove', false))
-        f.addComponent(new FormLabel(`${TextFormat.WHITE}--------------`))
-    })
+    const f = new CustomForm( `Delete Message` )
+    plugin.config.messagesList.forEach( ( value: string, idx: number ) => {
+        f.addComponent( new FormLabel( value ) )
+        f.addComponent( new FormToggle( 'Remove', false ) )
+        f.addComponent( new FormLabel( `${TextFormat.WHITE}--------------` ) )
+    } )
 
 
-    f.sendTo(ni, ({ response }) => {
-        const filteredResponse: boolean[] = response.filter((value: boolean | null) => value != null)
-        filteredResponse.forEach((v, i) => {
-            if (v) plugin.messagesList.splice(i, 1)
-        })
+    f.sendTo( ni, ( { response } ) => {
+        const filteredResponse: boolean[] = response.filter( ( value: boolean | null ) => value != null )
+        filteredResponse.forEach( ( v, i ) => {
+            if( v ) plugin.config.messagesList.splice( i, 1 )
+        } )
         broadcastLoop.reloadMessage()
-    });
+    } );
 }

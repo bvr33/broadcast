@@ -48,7 +48,7 @@ export class BroadcastLoop implements BroadcastLoop {
                         }
                     } else this.messageIndex = 0
 
-                    message = plugin.messagesList[this.messageIndex]
+                    message = plugin.config.messagesList[this.messageIndex]
 
                     if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
                     pkt.message = createMessage( message )
@@ -71,8 +71,8 @@ export class BroadcastLoop implements BroadcastLoop {
     }
 
     public updateMessage = () => {
-        plugin.updateMessages()
-        this.messagesCount = plugin.messagesList.length - 1
+        plugin.updateConfig()
+        this.messagesCount = plugin.config.messagesList.length - 1
     }
 
 }
