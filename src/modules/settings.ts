@@ -74,7 +74,7 @@ export const addMessage = ( commandUser: ServerPlayer ) => {
             return;
         }
         plugin.config.messagesList.push( msg )
-        broadcastLoop.reloadMessage()
+        broadcastLoop.updateMessage()
         commandUser.sendMessage( 'update messages list done' )
 
     } );
@@ -94,6 +94,6 @@ export const delMessage = ( commandUser: ServerPlayer ) => {
         filteredResponse.forEach( ( v, i ) => {
             if( v ) plugin.config.messagesList.splice( i, 1 )
         } )
-        broadcastLoop.reloadMessage()
+        broadcastLoop.updateMessage()
     } );
 }
