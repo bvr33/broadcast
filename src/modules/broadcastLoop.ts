@@ -5,23 +5,22 @@ import { events } from "bdsx/event";
 import { plugin } from "..";
 import { createMessage } from "../utils/helpers";
 
-
-
-export class BroadcastLoop {
+class BroadcastLoop {
 
     private loop: NodeJS.Timeout
     private messageIndex: number = 0
     private messagesCount: number
 
     constructor () {
-        events.serverOpen.on( async () => {
-            this.start()
-        }
+        events.serverOpen.on(
+            async () => {
+                this.start()
+
+            }
         )
     }
 
-
-    public start = () => {
+    public start = (): void => {
         if( plugin.config.enable )
         {
             this.updateMessage()
@@ -48,25 +47,24 @@ export class BroadcastLoop {
 
                     if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
                     pkt.message = createMessage( message )
-                    activePlayers.forEach( ( p ) => {
-                        p.sendNetworkPacket( pkt );
-                    } );
+                    activePlayers.forEach(
+                        ( p ) => {
+                            p.sendNetworkPacket( pkt );
+                        }
+                    );
                     pkt.dispose();
 
                 },
                 plugin.config.interval * 60000
-
             )
-
         }
-
     }
 
-    public stop = () => {
+    public stop = (): void => {
         clearInterval( this.loop )
     }
 
-    public updateMessage = () => {
+    public updateMessage = (): void => {
         plugin.updateConfig()
         this.messagesCount = plugin.config.messagesList.length - 1
     }

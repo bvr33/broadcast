@@ -1,9 +1,8 @@
 import { CustomForm, FormDropdown, FormInput, FormLabel, FormSlider, FormToggle } from "bdsx/bds/form";
-import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { ServerPlayer } from "bdsx/bds/player";
 import { TextFormat } from "bdsx/util";
-import { plugin } from "..";
-import { broadcastLoop } from "./loop";
+import { plugin } from "../..";
+import { broadcastLoop } from "../broadcastLoop";
 
 const colors: string[] = [
     `${TextFormat.RED}red`,
@@ -25,9 +24,6 @@ const colors: string[] = [
 ];
 
 export const changeSettings = ( commandUser: ServerPlayer ): void => {
-    const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
-
-
     const f = new CustomForm( `broadcast settings` );
     // on /off button
     f.addComponent( new FormToggle( 'On', plugin.config.enable ) );
@@ -48,52 +44,60 @@ export const changeSettings = ( commandUser: ServerPlayer ): void => {
     f.addComponent( new FormDropdown( 'border color', colors, borderColorSetNumber ) );
 
     f.addComponent( new FormSlider( 'message interval', 1, 10, 1, plugin.config.interval ) );
-    f.sendTo( ni, ( { response } ) => {
-        plugin.config.enable = response[0];
-        plugin.config.randomOrder = response[1];
-        plugin.config.logToConsole = response[2];
-        plugin.config.border = response[3];
-        plugin.config.textColor = Object.values( TextFormat )[response[4]];
-        plugin.config.borderColor = Object.values( TextFormat )[response[5]];
-        plugin.config.interval = response[6];
-        plugin.updateConfig();
-        commandUser.sendMessage( `update setings done` );
-    } );
+
+    f.sendTo( commandUser.getNetworkIdentifier(),
+        ( { response } ) => {
+            plugin.config.enable = response[0];
+            plugin.config.randomOrder = response[1];
+            plugin.config.logToConsole = response[2];
+            plugin.config.border = response[3];
+            plugin.config.textColor = Object.values( TextFormat )[response[4]];
+            plugin.config.borderColor = Object.values( TextFormat )[response[5]];
+            plugin.config.interval = response[6];
+            plugin.updateConfig();
+            commandUser.sendMessage( `update setings done` );
+        }
+    );
 };
 
 export const addMessage = ( commandUser: ServerPlayer ) => {
-    const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
     const f = new CustomForm( `Add Message` )
     f.addComponent( new FormInput( 'message', 'Message content', '' ) )
 
-    f.sendTo( ni, ( { response } ) => {
-        const msg = response[0];
-        if( msg == '' )
-        {
-            addMessage( commandUser );
-            return;
-        }
-        plugin.config.messagesList.push( msg )
-        broadcastLoop.updateMessage()
-        commandUser.sendMessage( 'update messages list done' )
+    f.sendTo( commandUser.getNetworkIdentifier(),
+        ( { response } ) => {
+            const msg = response[0];
+            if( msg == '' )
+            {
+                addMessage( commandUser );
+                return;
+            }
+            plugin.config.messagesList.push( msg )
+            broadcastLoop.updateMessage()
+            commandUser.sendMessage( 'update messages list done' )
 
-    } );
+        }
+    );
 }
 export const delMessage = ( commandUser: ServerPlayer ) => {
-    const ni: NetworkIdentifier = commandUser.getNetworkIdentifier();
     const f = new CustomForm( `Delete Message` )
-    plugin.config.messagesList.forEach( ( value: string, idx: number ) => {
-        f.addComponent( new FormLabel( value ) )
-        f.addComponent( new FormToggle( 'Remove', false ) )
-        f.addComponent( new FormLabel( `${TextFormat.WHITE}--------------` ) )
-    } )
+    plugin.config.messagesList.forEach(
+        ( value: string, idx: number ) => {
+            f.addComponent( new FormLabel( value ) )
+            f.addComponent( new FormToggle( 'Remove', false ) )
+            f.addComponent( new FormLabel( `${TextFormat.WHITE}--------------` ) )
+        }
+    )
 
-
-    f.sendTo( ni, ( { response } ) => {
-        const filteredResponse: boolean[] = response.filter( ( value: boolean | null ) => value != null )
-        filteredResponse.forEach( ( v, i ) => {
-            if( v ) plugin.config.messagesList.splice( i, 1 )
-        } )
-        broadcastLoop.updateMessage()
-    } );
+    f.sendTo( commandUser.getNetworkIdentifier(),
+        ( { response } ) => {
+            const filteredResponse: boolean[] = response.filter( ( value: boolean | null ) => value != null )
+            filteredResponse.forEach(
+                ( v, i ) => {
+                    if( v ) plugin.config.messagesList.splice( i, 1 )
+                }
+            )
+            broadcastLoop.updateMessage()
+        }
+    );
 }
