@@ -5,45 +5,35 @@ import { events } from "bdsx/event";
 import { plugin } from "..";
 import { createMessage } from "../utils/helpers";
 
-class BroadcastLoop {
+let loop: NodeJS.Timeout
+let messageIndex: number = 0
+let messagesCount: number
 
-    private loop: NodeJS.Timeout
-    private messageIndex: number = 0
-    private messagesCount: number
-
-    constructor () {
-        events.serverOpen.on(
-            async () => {
-                this.start()
-
-            }
-        )
-    }
-
-    public start = (): void => {
+export const broadcastLoop = {
+    start: (): void => {
         if( plugin.config.enable )
         {
-            this.updateMessage()
+            broadcastLoop.updateMessage()
 
-            this.loop = setInterval(
+            loop = setInterval(
                 () => {
                     const activePlayers = bedrockServer.serverInstance.getPlayers();
                     const pkt: TextPacket = TextPacket.allocate();
                     pkt.type = TextPacket.Types.Raw;
                     let message: string
-                    if( this.messagesCount > 1 )
+                    if( messagesCount > 1 )
                     {
 
-                        if( plugin.config.randomOrder ) this.messageIndex = Math.floor( Math.random() * this.messagesCount )
+                        if( plugin.config.randomOrder ) messageIndex = Math.floor( Math.random() * messagesCount )
                         else
                         {
-                            if( this.messageIndex >= this.messagesCount ) this.messageIndex = 0
-                            else this.messageIndex++
+                            if( messageIndex >= messagesCount ) messageIndex = 0
+                            else messageIndex++
 
                         }
-                    } else this.messageIndex = 0
+                    } else messageIndex = 0
 
-                    message = plugin.config.messagesList[this.messageIndex]
+                    message = plugin.config.messagesList[messageIndex]
 
                     if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
                     pkt.message = createMessage( message )
@@ -58,17 +48,21 @@ class BroadcastLoop {
                 plugin.config.interval * 60000
             )
         }
-    }
+    },
 
-    public stop = (): void => {
-        clearInterval( this.loop )
-    }
+    stop: (): void => {
+        clearInterval( loop )
+    },
 
-    public updateMessage = (): void => {
+    updateMessage: (): void => {
         plugin.updateConfig()
-        this.messagesCount = plugin.config.messagesList.length - 1
+        messagesCount = plugin.config.messagesList.length - 1
     }
 
 }
 
-export const broadcastLoop = new BroadcastLoop()
+events.serverOpen.on(
+    async () => {
+        broadcastLoop.start()
+    }
+)
