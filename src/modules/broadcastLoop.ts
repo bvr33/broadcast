@@ -9,11 +9,13 @@ let loop: NodeJS.Timeout
 let messageIndex: number = 0
 let messagesCount: number
 
-export const broadcastLoop = {
-    start: (): void => {
+export namespace broadcastLoop {
+
+
+    export function start(): void {
         if( plugin.config.enable )
         {
-            broadcastLoop.updateMessage()
+            updateMessage()
 
             loop = setInterval(
                 () => {
@@ -37,32 +39,28 @@ export const broadcastLoop = {
 
                     if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
                     pkt.message = createMessage( message )
-                    activePlayers.forEach(
-                        ( p ) => {
-                            p.sendNetworkPacket( pkt );
-                        }
-                    );
+                    activePlayers.forEach( p => p.sendNetworkPacket( pkt ) );
                     pkt.dispose();
 
                 },
                 plugin.config.interval * 60000
             )
         }
-    },
+    }
 
-    stop: (): void => {
+    export function stop(): void {
         clearInterval( loop )
-    },
+    }
 
-    updateMessage: (): void => {
+    export function updateMessage(): void {
         plugin.updateConfig()
         messagesCount = plugin.config.messagesList.length - 1
     }
 
-}
 
-events.serverOpen.on(
-    async () => {
-        broadcastLoop.start()
-    }
-)
+    events.serverOpen.on(
+        async () => {
+            start()
+        }
+    )
+}
