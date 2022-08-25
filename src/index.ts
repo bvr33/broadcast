@@ -1,18 +1,16 @@
-import { Plugin } from "./utils/plugin";
+import { Plugin } from "./utils/plugin"
 import { events } from "bdsx/event";
 import { TextFormat } from "bdsx/util";
 import './command';
+
 export enum langs {
     PL = "PL_pl"
 }
 
 export interface Language {
     name: string
-    messages: {}
-    menuEntries: {}
-    settings: {},
-    texts: {}
 }
+
 export interface Configuration {
     language: langs,
     enable: boolean,
@@ -24,6 +22,7 @@ export interface Configuration {
     border: string
     messagesList: string[],
 }
+
 
 export const plugin = new Plugin(
     {
@@ -41,10 +40,6 @@ export const plugin = new Plugin(
     },
     {
         name: 'Broadcast',
-        messages: {},
-        settings: {},
-        menuEntries: {},
-        texts: {}
     },
 );
 

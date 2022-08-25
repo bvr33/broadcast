@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { langs, Language, Configuration } from '..'
+import { Language, Configuration } from '..'
 
 export interface Plugin {
     config: Configuration,
