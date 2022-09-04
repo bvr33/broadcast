@@ -1,14 +1,13 @@
 import { Plugin } from "./utils/plugin"
-import { events } from "bdsx/event";
-import { TextFormat } from "bdsx/util";
-import './command';
+import { events } from "bdsx/event"
+import { TextFormat } from "bdsx/util"
+import './command'
 
 export enum langs {
     PL = "PL_pl"
 }
 
 export interface Language {
-    name: string
 }
 
 export interface Configuration {
@@ -25,6 +24,7 @@ export interface Configuration {
 
 
 export const plugin = new Plugin(
+    'Broadcast',
     {
         language: langs.PL,
         enable: true,
@@ -38,15 +38,13 @@ export const plugin = new Plugin(
             'welcome to the server!',
         ],
     },
-    {
-        name: 'Broadcast',
-    },
-);
+    {}
+)
 
 events.serverOpen.on( () => {
-    plugin.log( `launching` );
-} );
+    plugin.log( `launching` )
+} )
 
 events.serverClose.on( () => {
-    plugin.log( `closed` );
-} );
+    plugin.log( `closed` )
+} )

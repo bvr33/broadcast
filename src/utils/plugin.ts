@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { join } from 'path'
 import { Language, Configuration } from '..'
 
 export interface Plugin {
@@ -10,7 +10,7 @@ export interface Plugin {
 export class Plugin implements Plugin {
 
     public translate: Language
-    public config: Configuration;
+    public config: Configuration
     public name: string
 
     private configs: string = join( __dirname, '..', '..', '..', '..', 'config' );
@@ -19,10 +19,10 @@ export class Plugin implements Plugin {
     private langsPath: string
     private usedLangPath: string
 
-    constructor ( initConfiguration: Configuration, initTranslate: Language ) {
-        this.name = initTranslate.name
-        this.configPath = join( this.configs, this.name );
-        this.configFile = join( this.configPath, 'config.json' );
+    constructor ( name: string, initConfiguration: Configuration, initTranslate: Language ) {
+        this.name = name
+        this.configPath = join( this.configs, this.name )
+        this.configFile = join( this.configPath, 'config.json' )
         this.langsPath = join( this.configPath, 'lang' )
 
         if( !existsSync( this.configs ) ) mkdirSync( this.configs )
