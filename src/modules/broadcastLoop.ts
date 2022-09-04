@@ -1,7 +1,6 @@
 
 import { bedrockServer } from "bdsx/launcher"
 import { TextPacket } from "bdsx/bds/packets"
-import { events } from "bdsx/event"
 import { plugin } from ".."
 import { createMessage } from "../utils/helpers"
 
