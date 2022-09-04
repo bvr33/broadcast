@@ -1,6 +1,7 @@
 import { Plugin } from "./utils/plugin"
 import { events } from "bdsx/event"
 import { TextFormat } from "bdsx/util"
+import { broadcastLoop } from "./modules/broadcastLoop"
 import './command'
 
 export enum langs {
@@ -41,10 +42,15 @@ export const plugin = new Plugin(
     {}
 )
 
-events.serverOpen.on( () => {
-    plugin.log( `launching` )
-} )
+events.serverOpen.on(
+    async () => {
+        plugin.log( `launching` )
+        broadcastLoop.start()
+    }
+)
 
-events.serverClose.on( () => {
-    plugin.log( `closed` )
-} )
+events.serverClose.on(
+    () => {
+        plugin.log( `closed` )
+    }
+)

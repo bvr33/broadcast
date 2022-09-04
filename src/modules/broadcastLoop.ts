@@ -1,34 +1,30 @@
 
-import { bedrockServer } from "bdsx/launcher";
-import { TextPacket } from "bdsx/bds/packets";
-import { events } from "bdsx/event";
-import { plugin } from "..";
-import { createMessage } from "../utils/helpers";
+import { bedrockServer } from "bdsx/launcher"
+import { TextPacket } from "bdsx/bds/packets"
+import { events } from "bdsx/event"
+import { plugin } from ".."
+import { createMessage } from "../utils/helpers"
 
-let loop: NodeJS.Timeout
-let messageIndex: number = 0
-let messagesCount: number
 
 export namespace broadcastLoop {
-
+    let loop: NodeJS.Timeout
+    let messageIndex: number = 0
+    let messagesCount: number
 
     export function start(): void {
-        if( plugin.config.enable )
-        {
+        if( plugin.config.enable ) {
             updateMessage()
 
             loop = setInterval(
                 () => {
-                    const activePlayers = bedrockServer.serverInstance.getPlayers();
-                    const pkt: TextPacket = TextPacket.allocate();
-                    pkt.type = TextPacket.Types.Raw;
+                    const activePlayers = bedrockServer.serverInstance.getPlayers()
+                    const pkt: TextPacket = TextPacket.allocate()
+                    pkt.type = TextPacket.Types.Raw
                     let message: string
-                    if( messagesCount > 1 )
-                    {
+                    if( messagesCount > 1 ) {
 
                         if( plugin.config.randomOrder ) messageIndex = Math.floor( Math.random() * messagesCount )
-                        else
-                        {
+                        else {
                             if( messageIndex >= messagesCount ) messageIndex = 0
                             else messageIndex++
 
@@ -39,8 +35,8 @@ export namespace broadcastLoop {
 
                     if( plugin.config.logToConsole ) plugin.log( `${'message'.gray} ${'->'.yellow} ${message}` )
                     pkt.message = createMessage( message )
-                    activePlayers.forEach( p => p.sendNetworkPacket( pkt ) );
-                    pkt.dispose();
+                    activePlayers.forEach( p => p.sendNetworkPacket( pkt ) )
+                    pkt.dispose()
 
                 },
                 plugin.config.interval * 60000
@@ -56,11 +52,4 @@ export namespace broadcastLoop {
         plugin.updateConfig()
         messagesCount = plugin.config.messagesList.length - 1
     }
-
-
-    events.serverOpen.on(
-        async () => {
-            start()
-        }
-    )
 }
