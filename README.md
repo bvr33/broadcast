@@ -1,3 +1,1 @@
-
-# broadcast Plugin
-The plugin for bdsx
+# broadcast Plugin for bdsx
