@@ -52,5 +52,6 @@ events.serverOpen.on(
 events.serverClose.on(
     () => {
         plugin.log( `closed` )
+        broadcastLoop.stop()
     }
 )
